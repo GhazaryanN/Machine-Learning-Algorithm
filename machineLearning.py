@@ -23,6 +23,17 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
 
+# Check arguments number and validity
+if len(sys.argv) < 3:
+    raise TypeError("2 arguments are needed. The training data file, and the data to classify.")
+
+try:
+	open(sys.argv[1], 'r').readlines()
+	open(sys.argv[2], 'r').readlines()
+except FileNotFoundError:
+	print("[FileNotFoundError] Wrong file or file path in one of the two given files.")
+	sys.exit()
+
 # Load training dataset
 url = sys.argv[1]
 names = ['A', 'VA', 'Ea+', 'Bulk[ms]', 'W', 'Ms', 'CosP', 'VAR', 'VAC', 'Wh', 'class']
@@ -78,5 +89,16 @@ print()
 
 predictions = knn.predict(X)
 
+predictions_d = {}
+
 for i in range(len(X)):
 	print("%s, Predicted=%s" % (X[i], predictions[i]))
+
+	if not predictions[i] in predictions_d:
+		predictions_d[predictions[i]] = 1
+	else:
+		predictions_d[predictions[i]] += 1
+
+print("\nList of predictions: ")
+print(predictions_d)
+print("\nTotal of data to predict: " + str(len(X)))
