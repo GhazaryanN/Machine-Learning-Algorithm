@@ -16,7 +16,7 @@ The following libraries required to be install:
 * sklearn
 Use this command:
 ```
-python -m pip install --user numpy scipy matplotlib ipython jupyter pandas sympy nose
+python -m pip install --user numpy scipy scikit-learn matplotlib ipython jupyter pandas sympy nose
 ```
 
 ## Gettting Started
@@ -43,3 +43,4 @@ Simply execute:
 ```
 python machineLearning.py trainingData.csv data.csv
 ```
+You can also add -v to have the details of the classification for each data.

@@ -6,36 +6,43 @@ The following libraries required to be install:
     pandas
     sklearn
 Use this command:
-	python -m pip install --user numpy scipy matplotlib ipython jupyter pandas sympy nose
+	python -m pip install --user numpy scipy scikit-learn matplotlib ipython jupyter pandas sympy nose
 
 Input:
 	Give as first parameter the training data file
 	Give as second parameter the data to classify
+	Optional: -v to have the details of the classification
 """
 
 # Load libraries
 import sys
 import pandas
-import matplotlib.pyplot
 from sklearn import model_selection
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("dataTrain", type=str, help="The data to train the model.")
+parser.add_argument("data", type=str, help="The data to classify.")
+parser.add_argument("-v", "--verbosity", action="count", default=0)
+args = parser.parse_args()
 
 # Check arguments number and validity
 if len(sys.argv) < 3:
     raise TypeError("2 arguments are needed. The training data file, and the data to classify.")
 
 try:
-	open(sys.argv[1], 'r').readlines()
-	open(sys.argv[2], 'r').readlines()
+	open(args.dataTrain, 'r').readlines()
+	open(args.data, 'r').readlines()
 except FileNotFoundError:
 	print("[FileNotFoundError] Wrong file or file path in one of the two given files.")
 	sys.exit()
 
 # Load training dataset
-url = sys.argv[1]
+url = args.dataTrain
 names = ['A', 'VA', 'Ea+', 'Bulk[ms]', 'W', 'Ms', 'CosP', 'VAR', 'VAC', 'Wh', 'class']
 dataset = pandas.read_csv(url, names=names)
 
@@ -76,7 +83,7 @@ print(classification_report(Y_validation, predictions))
 
 
 # Classifications of the data
-data = sys.argv[2]
+data = args.data
 names = ['A', 'VA', 'Ea+', 'Bulk[ms]', 'W', 'Ms', 'CosP', 'VAR', 'VAC', 'Wh']
 dataset = pandas.read_csv(data, names=names)
 array = dataset.values
@@ -92,13 +99,17 @@ predictions = knn.predict(X)
 predictions_d = {}
 
 for i in range(len(X)):
-	print("%s, Predicted=%s" % (X[i], predictions[i]))
+	if args.verbosity:
+		print("%s, Predicted=%s" % (X[i], predictions[i]))
 
 	if not predictions[i] in predictions_d:
 		predictions_d[predictions[i]] = 1
 	else:
 		predictions_d[predictions[i]] += 1
 
-print("\nList of predictions: ")
-print(predictions_d)
+
 print("\nTotal of data to predict: " + str(len(X)))
+
+print("\nList of predictions: ")
+for name, value in predictions_d.items():
+	print(str(value)+ " " + str(name) + " (" + str(value/len(X)*100) + "%)")
