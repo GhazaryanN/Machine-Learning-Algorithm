@@ -60,7 +60,7 @@ array = dataset.values
 X = array[:,0:10]
 Y = array[:,10]
 validation_size = 0.20
-seed = 7
+seed = 5
 X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, test_size=validation_size, random_state=seed)
 
 # Test options and evaluation metric
@@ -113,3 +113,6 @@ print("\nTotal of data to predict: " + str(len(X)))
 print("\nList of predictions: ")
 for name, value in predictions_d.items():
 	print(str(value)+ " " + str(name) + " (" + str(value/len(X)*100) + "%)")
+
+print()
+print(predictions)
